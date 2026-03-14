@@ -111,11 +111,11 @@ Berikut adalah breakdown tugas untuk pengembangan fitur lanjutan yang direncanak
 - [ ] Integrasi library chart (misal: Chart.js atau LayerCake) untuk visualisasi.
 - [ ] Chart "Mastery Distribution" (Penyebaran tingkat kemahiran kartu).
 - [ ] Grafik "Activity Heatmap" atau "Learning Progress" mingguan.
-- [ ] Fitur "Study Streak" (Menghitung hari berturut-turut belajar).
+- [x] Fitur "Study Streak" (Menghitung hari berturut-turut belajar).
 - [ ] Statistik "Retention Rate" (Persentase jawaban benar/salah).
 
 ### 2. Manajemen Data Tingkat Lanjut
-- [ ] Fitur **Import JSON** untuk restorasi backup penuh (saat ini baru CSV).
+- [x] Fitur **Import JSON** untuk restorasi backup penuh (saat ini baru CSV).
 - [ ] Validasi data import yang lebih ketat dengan feedback error yang jelas.
 - [ ] Fitur "Merge Decks" (Menggabungkan dua deck menjadi satu).
 - [ ] Opsi untuk menghapus semua data (Reset App).
@@ -127,13 +127,13 @@ Berikut adalah breakdown tugas untuk pengembangan fitur lanjutan yang direncanak
 - [ ] Timer opsional saat menjawab kartu.
 
 ### 4. Navigasi & Organisasi
-- [ ] Fitur **Search Bar** di Dashboard untuk mencari deck.
-- [ ] Fitur **Search & Filter** di dalam deck untuk mencari kartu tertentu.
+- [x] Fitur **Search Bar** di Dashboard untuk mencari deck.
+- [x] Fitur **Search & Filter** di dalam deck untuk mencari kartu tertentu.
 - [ ] Fitur **Tagging** pada kartu untuk pengelompokan lebih fleksibel.
-- [ ] Sortir deck berdasarkan: Nama, Terakhir dipelajari, Jumlah kartu due.
+- [x] Sortir deck berdasarkan: Nama, Terakhir dipelajari, Jumlah kartu due.
 
 ### 5. Robustness & Persistence
-- [ ] Pastikan tema (Dark/Light) tersimpan di IndexedDB (selain localStorage).
+- [x] Pastikan tema (Dark/Light) tersimpan di IndexedDB (selain localStorage).
 - [ ] Restore "Last Session State": Kembali ke view/deck terakhir saat app dibuka.
 - [ ] Optimasi performa untuk database dengan ribuan kartu.
 
