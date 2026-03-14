@@ -14,6 +14,7 @@
 
   let activeTab = typeof localStorage !== 'undefined' ? localStorage.getItem('lastActiveTab') || 'dashboard' : 'dashboard';
   let studyingDeckId = null;
+  let isQuickStudy = false;
   let deferredPrompt;
   let showInstallButton = false;
 
@@ -49,11 +50,19 @@
 
   function startStudy(deckId) {
     studyingDeckId = deckId;
+    isQuickStudy = false;
+    activeTab = 'study';
+  }
+
+  function startQuickStudy() {
+    isQuickStudy = true;
+    studyingDeckId = null;
     activeTab = 'study';
   }
 
   function finishStudy() {
     studyingDeckId = null;
+    isQuickStudy = false;
     activeTab = 'dashboard';
   }
 
@@ -92,9 +101,9 @@
 
   <main class="flex-1 p-5 pb-24 max-w-[600px] mx-auto w-full">
     {#if activeTab === 'dashboard'}
-      <Dashboard {showInstallButton} on:study={(e) => startStudy(e.detail)} on:install={handleInstall} />
+      <Dashboard {showInstallButton} on:study={(e) => startStudy(e.detail)} on:quickStudy={startQuickStudy} on:install={handleInstall} />
     {:else if activeTab === 'study'}
-      <StudyView deckId={studyingDeckId} on:finish={finishStudy} />
+      <StudyView deckId={studyingDeckId} isQuickStudy={isQuickStudy} on:finish={finishStudy} />
     {:else if activeTab === 'import'}
       <ImportView on:finish={() => activeTab = 'dashboard'} />
     {:else if activeTab === 'stats'}

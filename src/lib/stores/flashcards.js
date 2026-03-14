@@ -68,3 +68,14 @@ export async function deleteCard(id) {
   await db.delete('cards', id);
   await loadCards();
 }
+
+export async function resetAllData() {
+  const db = await dbPromise;
+  const tx = db.transaction(['decks', 'cards', 'settings'], 'readwrite');
+  await tx.objectStore('decks').clear();
+  await tx.objectStore('cards').clear();
+  await tx.objectStore('settings').clear();
+  await tx.done;
+  await loadDecks();
+  await loadCards();
+}

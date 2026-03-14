@@ -83,6 +83,10 @@ function createSettingsStore() {
     });
   }
 
+  async function reset() {
+    set(defaultSettings);
+  }
+
   load();
 
   return {
@@ -90,6 +94,7 @@ function createSettingsStore() {
     setTheme,
     updateStudiedToday,
     load,
+    reset,
   };
 }
 

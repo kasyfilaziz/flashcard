@@ -5,14 +5,19 @@
   const dispatch = createEventDispatcher();
   let fileInput;
   let importData = [];
+  let invalidData = [];
   let isImporting = false;
   let importStatus = '';
-  let importType = 'csv'; // 'csv' or 'json'
+  let importType = 'csv';
+  let errorDetails = [];
 
   async function handleFileChange(e) {
     const file = e.target.files[0];
     if (!file) return;
-
+    
+    errorDetails = [];
+    invalidData = [];
+    
     const text = await file.text();
     
     if (file.name.endsWith('.json')) {
@@ -25,6 +30,18 @@
   async function handleCSVImport(text) {
     importType = 'csv';
     const rows = text.split('\n').filter(r => r.trim());
+    
+    if (rows.length === 0) {
+      importStatus = 'File kosong!';
+      return;
+    }
+    
+    const header = rows[0].toLowerCase();
+    if (!header.includes('deck') || !header.includes('depan') || !header.includes('belakang')) {
+      importStatus = 'Header CSV tidak valid!';
+      errorDetails = ['Header harus mengandung: deck, depan, belakang'];
+      return;
+    }
     
     const parseCSVRow = (row) => {
       const result = [];
@@ -45,17 +62,35 @@
       return result.map(p => p.replace(/^"|"$/g, ''));
     };
 
-    importData = rows.slice(1).map(row => {
-      const parts = parseCSVRow(row);
-      return {
-        type: 'csv',
-        deck: parts[0],
-        front: parts[1],
-        back: parts[2]
-      };
-    }).filter(d => d.deck && d.front && d.back);
+    const validItems = [];
+    const invalidItems = [];
     
-    importStatus = `Ditemukan ${importData.length} kartu valid.`;
+    rows.slice(1).forEach((row, index) => {
+      const parts = parseCSVRow(row);
+      if (parts.length < 3 || !parts[0] || !parts[1] || !parts[2]) {
+        invalidItems.push({ row: index + 2, reason: 'Data tidak lengkap' });
+      } else {
+        validItems.push({
+          type: 'csv',
+          deck: parts[0],
+          front: parts[1],
+          back: parts[2]
+        });
+      }
+    });
+    
+    importData = validItems;
+    invalidData = invalidItems;
+    
+    if (importData.length === 0) {
+      importStatus = 'Tidak ada data valid ditemukan!';
+      errorDetails = invalidItems.map(i => `Baris ${i.row}: ${i.reason}`);
+    } else {
+      importStatus = `Ditemukan ${importData.length} kartu valid.`;
+      if (invalidData.length > 0) {
+        errorDetails = [`${invalidData.length} baris dilewati karena tidak valid`];
+      }
+    }
   }
 
   async function handleJSONImport(text) {
@@ -63,20 +98,49 @@
     try {
       const data = JSON.parse(text);
       
-      if (!data.decks || !data.cards) {
-        importStatus = 'Format JSON tidak valid. Harus ada key "decks" dan "cards".';
+      const errors = [];
+      
+      if (!data.decks) {
+        errors.push('Key "decks" tidak ditemukan');
+      }
+      if (!data.cards) {
+        errors.push('Key "cards" tidak ditemukan');
+      }
+      
+      if (errors.length > 0) {
+        importStatus = 'Format JSON tidak valid!';
+        errorDetails = errors;
         return;
+      }
+      
+      if (!Array.isArray(data.decks)) {
+        errors.push('"decks" harus berupa array');
+      }
+      if (!Array.isArray(data.cards)) {
+        errors.push('"cards" harus berupa array');
+      }
+      
+      if (errors.length > 0) {
+        importStatus = 'Format JSON tidak valid!';
+        errorDetails = errors;
+        return;
+      }
+      
+      const invalidCards = data.cards.filter(c => !c.front || !c.back);
+      if (invalidCards.length > 0) {
+        errorDetails = [`${invalidCards.length} kartu memiliki data yang tidak lengkap`];
       }
 
       importData = [{
         type: 'json',
         decks: data.decks,
-        cards: data.cards
+        cards: data.cards.filter(c => c.front && c.back)
       }];
       
-      importStatus = `Ditemukan ${data.decks.length} deck dan ${data.cards.length} kartu.`;
+      importStatus = `Ditemukan ${data.decks.length} deck dan ${importData[0].cards.length} kartu valid.`;
     } catch (e) {
-      importStatus = 'Gagal membaca file JSON. Pastikan format benar.';
+      importStatus = 'Gagal membaca file JSON!';
+      errorDetails = ['File tidak dapat dibaca. Pastikan format JSON benar.'];
       console.error(e);
     }
   }
@@ -94,9 +158,12 @@
       }
       importStatus = 'Import Berhasil!';
       importData = [];
+      invalidData = [];
+      errorDetails = [];
       setTimeout(() => dispatch('finish'), 1500);
     } catch (error) {
       importStatus = 'Gagal mengimport file.';
+      errorDetails = ['Terjadi kesalahan saat import. Silakan coba lagi.'];
       console.error(error);
     } finally {
       isImporting = false;
@@ -129,14 +196,24 @@
     const deckIdMap = new Map();
 
     for (const deck of data.decks) {
+      if (!deck.name) continue;
       const id = await addDeck(deck.name);
       deckIdMap.set(deck.id || deck.name, id);
     }
 
     for (const card of data.cards) {
+      if (!card.front || !card.back) continue;
       const deckId = deckIdMap.get(card.deckId) || card.deckId;
       await addCard(deckId, card.front, card.back);
     }
+  }
+  
+  function resetImport() {
+    importData = [];
+    invalidData = [];
+    importStatus = '';
+    errorDetails = [];
+    if (fileInput) fileInput.value = '';
   }
 </script>
 
@@ -167,6 +244,14 @@
     <div class="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-2xl flex items-center justify-center space-x-3 border border-blue-100 dark:border-blue-900/30 animate-fade-in">
       <div class="bg-blue-500 rounded-full h-2 w-2 animate-ping"></div>
       <p class="text-xs font-bold text-blue-700 dark:text-blue-300 uppercase tracking-widest">{importStatus}</p>
+    </div>
+  {/if}
+
+  {#if errorDetails.length > 0}
+    <div class="bg-red-50 dark:bg-red-900/10 p-4 rounded-2xl border border-red-100 dark:border-red-900/30 animate-fade-in">
+      {#each errorDetails as error}
+        <p class="text-xs font-bold text-red-600 dark:text-red-400 mb-1">{error}</p>
+      {/each}
     </div>
   {/if}
 
@@ -220,6 +305,12 @@
   {/if}
 
   {#if importData.length > 0}
+    <button 
+      on:click={resetImport}
+      class="w-full py-3 rounded-2xl font-bold text-gray-400 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 transition-all"
+    >
+      Pilih File Lain
+    </button>
     <button 
       on:click={startImport}
       disabled={isImporting}

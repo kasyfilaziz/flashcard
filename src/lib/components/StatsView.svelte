@@ -1,5 +1,5 @@
 <script>
-  import { decks, cards } from '../stores/flashcards';
+  import { decks, cards, resetAllData } from '../stores/flashcards';
   import { settings } from '../stores/settings';
   import { exportToJSON, exportToCSV } from '../utils/export';
 
@@ -9,6 +9,8 @@
   $: masteredCount = $cards.filter(c => c.easeFactor > 2.8).length;
   $: streak = $settings.streak;
   $: totalStudyDays = $settings.totalStudyDays;
+
+  let showResetConfirm = false;
 
   function handleExportJSON() {
     const data = {
@@ -32,6 +34,13 @@
       };
     });
     exportToCSV(csvData, `flashcard_export_${new Date().toISOString().split('T')[0]}.csv`);
+  }
+
+  async function handleResetApp() {
+    await resetAllData();
+    await settings.reset();
+    showResetConfirm = false;
+    window.location.reload();
   }
 </script>
 
@@ -131,6 +140,43 @@
         </svg>
       </button>
     </div>
+  </section>
+
+  <section class="space-y-4 pt-6">
+    <div class="px-2">
+      <h3 class="font-black text-lg mb-1 tracking-tighter uppercase tracking-widest text-xs text-red-400">Danger Zone</h3>
+      <p class="text-xs text-gray-500">Tindakan ini tidak dapat dibatalkan.</p>
+    </div>
+    
+    {#if showResetConfirm}
+      <div class="bg-red-50 dark:bg-red-900/20 p-5 rounded-3xl border border-red-200 dark:border-red-800">
+        <p class="text-sm font-bold text-red-600 dark:text-red-400 mb-4 text-center">Apakah kamu yakin ingin menghapus semua data? Semua deck dan kartu akan hilang forever!</p>
+        <div class="flex gap-3">
+          <button 
+            on:click={() => showResetConfirm = false}
+            class="flex-1 py-3 rounded-2xl font-bold bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm"
+          >
+            Batal
+          </button>
+          <button 
+            on:click={handleResetApp}
+            class="flex-1 py-3 rounded-2xl font-bold bg-red-600 text-white text-sm"
+          >
+            Ya, Hapus Semua
+          </button>
+        </div>
+      </div>
+    {:else}
+      <button 
+        on:click={() => showResetConfirm = true}
+        class="flex items-center justify-between p-5 bg-white dark:bg-gray-800 rounded-3xl border border-red-100 dark:border-red-900/30 shadow-sm hover:shadow-md active:scale-95 transition-all text-sm font-bold group w-full"
+      >
+        <span class="text-red-500 group-hover:translate-x-1 transition-transform">Hapus Semua Data</span>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </button>
+    {/if}
   </section>
 </div>
 

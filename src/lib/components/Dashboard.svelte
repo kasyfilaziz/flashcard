@@ -25,6 +25,8 @@
       return 0;
     });
 
+  $: totalDueCards = $cards.filter(c => c.nextReview <= Date.now()).length;
+
   function handleAddDeck() {
     if (newDeckName.trim()) {
       addDeck(newDeckName.trim());
@@ -147,6 +149,28 @@
       <button on:click={() => searchQuery = ''} class="text-blue-500 text-xs font-bold uppercase tracking-widest">Reset Pencarian</button>
     </div>
   {:else}
+    {#if totalDueCards > 0}
+      <button 
+        on:click={() => dispatch('quickStudy')}
+        class="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white p-4 rounded-2xl shadow-lg shadow-orange-500/20 active:scale-95 transition-all flex items-center justify-between"
+      >
+        <div class="flex items-center space-x-3">
+          <div class="bg-white/20 p-2 rounded-xl">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <div class="text-left">
+            <p class="font-black text-sm">Latihan Cepat</p>
+            <p class="text-[10px] font-bold text-orange-100">{totalDueCards} kartu menunggu</p>
+          </div>
+        </div>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
+      </button>
+    {/if}
+
     <div class="grid grid-cols-1 gap-4">
       {#each filteredDecks as deck (deck.id)}
         <div 

@@ -6,6 +6,7 @@
   import { createEventDispatcher } from 'svelte';
 
   export let deckId;
+  export let isQuickStudy = false;
   const dispatch = createEventDispatcher();
 
   let sessionCards = [];
@@ -16,7 +17,11 @@
 
   $: {
     const now = Date.now();
-    sessionCards = $cards.filter(c => c.deckId === deckId && c.nextReview <= now);
+    if (isQuickStudy) {
+      sessionCards = $cards.filter(c => c.nextReview <= now);
+    } else {
+      sessionCards = $cards.filter(c => c.deckId === deckId && c.nextReview <= now);
+    }
   }
 
   function handleRating(rating) {
@@ -66,7 +71,7 @@
       </svg>
     </button>
     <div class="text-center">
-      <h2 class="font-black text-xl leading-none">Latihan</h2>
+      <h2 class="font-black text-xl leading-none">{isQuickStudy ? 'Latihan Cepat' : 'Latihan'}</h2>
       <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mt-1">
         {sessionFinished ? 'Selesai' : `Kartu ${currentIndex + 1} / ${sessionCards.length}`}
       </p>
