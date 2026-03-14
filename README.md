@@ -4,17 +4,50 @@ Aplikasi web flashcard dengan fitur Spaced Repetition (SM-2) untuk membantu meng
 
 ## Fitur
 
+### Fitur Dasar
 - **Kartu Flashcard** - Buat kartu dengan sisi depan dan belakang
 - **Deck Management** - Organisasi kartu ke dalam deck
-- **Spaced Repetition (SM-2)** - Algoritma ulangi tertunda untuk menghapal optimal
 - **Mode Latihan** - Review kartu dengan rating 1-5
-- **Progress Tracking** - Lihat progres belajar
 - **PWA** - Installable di mobile (Android/iOS)
 - **Offline First** - Tersedia offline, data disimpan lokal
-- **Import/Export CSV** - Backup dan import massal kartu dari file CSV
 - **Dark Mode** - Dukungan tema gelap/terang
 - **Haptic Feedback** - Feedback getaran pada mobile
-- **Persistence** - Menyimpan state tab terakhir dan tema user
+
+### Algoritma SM-2 & Kartu Due
+Aplikasi ini menggunakan algoritma **Spaced Repetition (SM-2)** untuk menjadwalkan kapan kamu harus mengulas kartu. Setiap kartu memiliki:
+- **Ease Factor**: Tingkat kemudahan mengingat (default 2.5)
+- **Interval**: Jarak hari sebelum kartu muncul kembali
+- **Next Review**: Tanggal kapan kartu akan muncul lagi
+
+**Apa itu Kartu Due?**
+Kartu "due" adalah kartu yang sudah waktunya untuk diulas berdasarkan perhitungan SM-2. Ketika `waktu sekarang >= nextReview`, kartu tersebut akan muncul di latihan hari ini.
+
+**Rating 1-5:**
+- 1-2: Tidak ingat / Sulit ingat → Interval reset ke 0
+- 3-5: Ingat → Interval bertambah berdasarkan Ease Factor
+
+### Streak (Hari Berturut-turut)
+Fitur ini menghitung kebiasaan belajarmu:
+- **Streak**: Jumlah hari berturut-turut kamu menyelesaikan sesi latihan
+- **Total Study Days**: Total hari kamu sudah belajar (tidak reset)
+
+**Cara Kerja Streak:**
+1. Selesaiakan sesi latihan (jawab semua kartu due di satu deck)
+2. Streak akan naik 1 jika kamu juga belajar kemarin
+3. Jika ada waktu kosong 1 hari (tidak belajar), streak akan reset ke 1
+4. Contoh: Senin(+) → Selasa(2) → Kamis(reset ke 1)
+
+### Import & Export
+- **Import CSV**: Upload file CSV dengan format `deck,depan,belakang`
+- **Import JSON**: Restore backup lengkap (deck + kartu)
+- **Export JSON**: Backup semua data
+- **Export CSV**: Export semua kartu ke file CSV
+
+### Fitur Tambahan
+- **Quick Study**: Latihan cepat semua kartu due dari semua deck sekaligus
+- **Search & Filter**: Cari deck berdasarkan nama, urutkan berdasarkan urgency
+- **Reset App**: Hapus semua data dengan konfirmasi
+- **Persistence**: Menyimpan tema, streak, dan tab terakhir
 
 ## Tech Stack
 
