@@ -13,6 +13,18 @@
   let newCardFront = '';
   let newCardBack = '';
 
+  let searchQuery = '';
+  let sortBy = 'name'; // 'name', 'newest', 'due'
+
+  $: filteredDecks = $decks
+    .filter(d => d.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    .sort((a, b) => {
+      if (sortBy === 'name') return a.name.localeCompare(b.name);
+      if (sortBy === 'newest') return (b.createdAt || 0) - (a.createdAt || 0);
+      if (sortBy === 'due') return getDueCount(b.id) - getDueCount(a.id);
+      return 0;
+    });
+
   function handleAddDeck() {
     if (newDeckName.trim()) {
       addDeck(newDeckName.trim());
@@ -77,6 +89,38 @@
     </button>
   </div>
 
+  <div class="flex flex-col sm:flex-row gap-3 px-2">
+    <div class="relative flex-1">
+      <input 
+        type="text" 
+        bind:value={searchQuery}
+        placeholder="Cari deck..."
+        class="w-full bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-2xl px-10 py-3 text-sm focus:border-blue-500 focus:outline-none transition-all font-medium"
+      />
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      {#if searchQuery}
+        <button 
+          on:click={() => searchQuery = ''}
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l18 18" />
+          </svg>
+        </button>
+      {/if}
+    </div>
+    <select 
+      bind:value={sortBy}
+      class="bg-white dark:bg-gray-800 border-2 border-gray-100 dark:border-gray-700 rounded-2xl px-4 py-3 text-sm focus:border-blue-500 focus:outline-none transition-all font-medium appearance-none cursor-pointer min-w-[120px]"
+    >
+      <option value="name">Nama (A-Z)</option>
+      <option value="newest">Terbaru</option>
+      <option value="due">Paling Urgent</option>
+    </select>
+  </div>
+
   {#if $decks.length === 0}
     <div class="flex flex-col items-center justify-center py-20 text-center space-y-4 px-6 bg-gray-50 dark:bg-gray-800/20 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-gray-800">
       <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-full">
@@ -89,9 +133,22 @@
         <p class="text-gray-500 text-xs max-w-[200px] mx-auto">Buat deck pertamamu untuk mulai menghapal!</p>
       </div>
     </div>
+  {:else if filteredDecks.length === 0}
+    <div class="flex flex-col items-center justify-center py-20 text-center space-y-4 px-6 bg-gray-50 dark:bg-gray-800/20 rounded-[2.5rem] border-2 border-dashed border-gray-200 dark:border-gray-800">
+      <div class="bg-gray-100 dark:bg-gray-800 p-6 rounded-full text-gray-400">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 9.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      </div>
+      <div>
+        <h3 class="font-bold text-lg">Tidak Ada Hasil</h3>
+        <p class="text-gray-500 text-xs max-w-[200px] mx-auto">Coba cari dengan kata kunci lain.</p>
+      </div>
+      <button on:click={() => searchQuery = ''} class="text-blue-500 text-xs font-bold uppercase tracking-widest">Reset Pencarian</button>
+    </div>
   {:else}
     <div class="grid grid-cols-1 gap-4">
-      {#each $decks as deck (deck.id)}
+      {#each filteredDecks as deck (deck.id)}
         <div 
           class="group cursor-pointer active:scale-95 transition-transform duration-200"
           on:click={() => dispatch('study', deck.id)}

@@ -1,11 +1,14 @@
 <script>
   import { decks, cards } from '../stores/flashcards';
+  import { settings } from '../stores/settings';
   import { exportToJSON, exportToCSV } from '../utils/export';
 
   $: totalDecks = $decks.length;
   $: totalCards = $cards.length;
   $: dueToday = $cards.filter(c => c.nextReview <= Date.now()).length;
-  $: masteredCount = $cards.filter(c => c.easeFactor > 2.8).length; // Simple mastery heuristic
+  $: masteredCount = $cards.filter(c => c.easeFactor > 2.8).length;
+  $: streak = $settings.streak;
+  $: totalStudyDays = $settings.totalStudyDays;
 
   function handleExportJSON() {
     const data = {
@@ -77,6 +80,27 @@
       </div>
       <span class="text-2xl font-black">{masteredCount}</span>
       <span class="text-[10px] font-black uppercase tracking-tighter text-green-400 group-hover:text-green-600 transition-colors">Mastered</span>
+    </div>
+  </div>
+
+  <div class="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 p-6 rounded-[2.5rem] border border-amber-100 dark:border-amber-900/30">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <div class="bg-amber-500 rounded-full h-12 w-12 flex items-center justify-center text-white shadow-lg shadow-amber-500/20">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z" />
+          </svg>
+        </div>
+        <div>
+          <p class="text-[10px] font-black uppercase tracking-widest text-amber-600 dark:text-amber-400">Study Streak</p>
+          <p class="text-3xl font-black text-amber-700 dark:text-amber-300">{streak} <span class="text-sm">hari</span></p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Total Belajar</p>
+        <p class="text-lg font-bold text-gray-700 dark:text-gray-300">{totalStudyDays} hari</p>
+      </div>
     </div>
   </div>
 

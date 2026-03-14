@@ -1,6 +1,7 @@
 <script>
   import { cards, updateCard, loadCards } from '../stores/flashcards';
   import { calculateSM2 } from '../utils/sm2';
+  import { settings } from '../stores/settings';
   import FlashCard from './FlashCard.svelte';
   import { createEventDispatcher } from 'svelte';
 
@@ -45,6 +46,8 @@
         currentIndex++;
       } else {
         sessionFinished = true;
+        // Update streak when session completes
+        settings.updateStudiedToday();
       }
       isTransitioning = false;
     }, 1000);
