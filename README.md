@@ -88,15 +88,17 @@ npm run preview
 
 ```
 /src
+  /apps
+    /flashcard         # Flashcard app module
   /lib
-    /components     # Komponen UI
-    /stores         # State management (auth, theme, cards)
-    /utils          # Helpers (SM-2, storage, csv)
-  App.svelte        # Root component
-  main.js           # Entry point
+    /components        # Shared UI components
+    /stores            # Shared state (apps, navigation, theme)
+    /utils             # Shared Helpers
+  App.svelte           # Root component (Container)
+  main.js              # Entry point
 /public
-  icons/            # PWA icons
-  manifest.json     # PWA manifest
+  icons/               # PWA icons
+  manifest.json        # PWA manifest
 ```
 
 ## Milestone / Rencana Pengembangan
