@@ -4,7 +4,8 @@ const DB_NAME = 'flashcard_db';
 const DB_VERSION = 3;
 
 const APP_PREFIXES = {
-  flashcard: 'flashcard_'
+  flashcard: 'flashcard_',
+  pomodoro: 'pomodoro_'
 };
 
 export function getStoreNames(prefix) {

@@ -167,6 +167,8 @@ Break the task into a structured roadmap using the `todowrite` tool. Each task m
 ## Active Technologies
 - JavaScript (ES Modules), Svelte 4.x + Svelte 4.x, TailwindCSS 3.x, idb 8.x, vite-plugin-pwa (001-modular-app-container)
 - IndexedDB via idb library (local-first) (001-modular-app-container)
+- JavaScript (ES Modules) + Svelte 4.x, idb 8.x (IndexedDB), TailwindCSS 3.x (002-pomodoro-timer)
+- IndexedDB via idb library (per constitution) (002-pomodoro-timer)
 
 ## Recent Changes
 - 001-modular-app-container: Added JavaScript (ES Modules), Svelte 4.x + Svelte 4.x, TailwindCSS 3.x, idb 8.x, vite-plugin-pwa
