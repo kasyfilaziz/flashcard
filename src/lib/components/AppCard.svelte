@@ -3,6 +3,8 @@
 
   export let app;
 
+  let isPressed = false;
+
   const iconMap = {
     'cards': 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z',
     'brain': 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z',
@@ -12,15 +14,26 @@
   };
 
   $: path = iconMap[app.icon] || iconMap['brain'];
+
+  function handleClick() {
+    isPressed = true;
+    setTimeout(() => {
+      navigation.navigateTo(app.id);
+    }, 150);
+  }
 </script>
 
 <button 
-  on:click={() => navigation.navigateTo(app.id)}
-  class="group relative bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center overflow-hidden active:scale-95"
+  on:click={handleClick}
+  on:mousedown={() => isPressed = true}
+  on:mouseup={() => isPressed = false}
+  on:mouseleave={() => isPressed = false}
+  class="group relative bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center overflow-hidden
+    {isPressed ? 'scale-95 shadow-inner' : 'hover:scale-[1.02]'}"
 >
   <div class="absolute inset-0 bg-blue-600/5 group-hover:bg-blue-600/10 transition-colors duration-300"></div>
   
-  <div class="mb-4 p-4 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl group-hover:scale-110 transition-transform duration-300">
+  <div class="mb-4 p-4 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl group-hover:scale-110 transition-transform duration-300 {isPressed ? 'scale-90' : ''}">
     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={path} />
     </svg>
