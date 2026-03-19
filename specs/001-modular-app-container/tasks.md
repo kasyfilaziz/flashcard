@@ -126,12 +126,12 @@ description: "Task list for modular app container implementation"
 
 ---
 
-## Phase 6b: Data Isolation (FR-008) - NOT YET IMPLEMENTED
+## Phase 6b: Data Isolation (FR-008) ✅
 
 **Purpose**: Ensure each app has isolated data storage per constitution requirement
 
-- [ ] T038 [US2] Implement IndexedDB store prefixes per app (e.g., `flashcard_decks`, `flashcard_cards`)
-- [ ] T039 [US3] Verify data isolation - flashcard data does not leak to other apps
+- [x] T038 [US2] Implement IndexedDB store prefixes per app (e.g., `flashcard_decks`, `flashcard_cards`)
+- [x] T039 [US3] Verify data isolation - flashcard data does not leak to other apps
 
 **Checkpoint**: Data isolation verified - each app's data is separate
 
