@@ -14,18 +14,25 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-body {
+* {
+  box-sizing: border-box;
+}
+
+html, body {
   margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #0f172a;
+  overflow: hidden;
 }
 
 #app {
   width: 100%;
   max-width: 600px;
-  margin: 0 auto;
   height: 100vh;
-  overflow: hidden;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
