@@ -39,7 +39,7 @@
   $: toastVisible = $offlineReady || $needRefresh;
 </script>
 
-<div class="flex-1 flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 h-screen overflow-hidden">
+<div class="flex-1 flex flex-col w-full bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-200 overflow-hidden relative">
   <header class="border-b border-gray-100 dark:border-gray-800 sticky top-0 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md z-30">
     <div class="p-5 max-w-[600px] mx-auto flex justify-between items-center w-full">
       <div class="flex items-center space-x-2">
