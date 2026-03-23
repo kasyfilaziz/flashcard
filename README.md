@@ -1,252 +1,144 @@
-# Flashcard App
+# Brain Workouts
 
-Aplikasi web flashcard dengan fitur Spaced Repetition (SM-2) untuk membantu menghapal secara efektif. Dapat diinstall sebagai PWA di mobile.
+A modular web application platform for cognitive training and productivity. Built as a local-first Progressive Web App (PWA) with a focus on privacy, offline accessibility, and performance.
 
-## Fitur
+## Featured Apps
 
-### Fitur Dasar
-- **Kartu Flashcard** - Buat kartu dengan sisi depan dan belakang
-- **Deck Management** - Organisasi kartu ke dalam deck
-- **Mode Latihan** - Review kartu dengan rating 1-5
-- **PWA** - Installable di mobile (Android/iOS)
-- **Offline First** - Tersedia offline, data disimpan lokal
-- **Dark Mode** - Dukungan tema gelap/terang
-- **Haptic Feedback** - Feedback getaran pada mobile
+This platform hosts several "workout" modules designed to improve various cognitive functions:
 
-### Algoritma SM-2 & Kartu Due
-Aplikasi ini menggunakan algoritma **Spaced Repetition (SM-2)** untuk menjadwalkan kapan kamu harus mengulas kartu. Setiap kartu memiliki:
-- **Ease Factor**: Tingkat kemudahan mengingat (default 2.5)
-- **Interval**: Jarak hari sebelum kartu muncul kembali
-- **Next Review**: Tanggal kapan kartu akan muncul lagi
+- **Flashcards**: Advanced memorization tool using the **SM-2 Spaced Repetition** algorithm.
+- **Pomodoro Timer**: Focus and productivity tool with session naming, wake lock, and detailed statistics.
+- **Memory Match**: Visual-spatial memory training via grid-based card matching.
+- **Math Sprint**: Fast-paced mental arithmetic challenges to improve calculation speed.
+- **Word Scramble**: Vocabulary and pattern recognition training.
+- **Sequence Recall**: Working memory training focusing on pattern and sequence reproduction.
 
-**Apa itu Kartu Due?**
-Kartu "due" adalah kartu yang sudah waktunya untuk diulas berdasarkan perhitungan SM-2. Ketika `waktu sekarang >= nextReview`, kartu tersebut akan muncul di latihan hari ini.
+---
 
-**Rating 1-5:**
-- 1-2: Tidak ingat / Sulit ingat → Interval reset ke 0
-- 3-5: Ingat → Interval bertambah berdasarkan Ease Factor
+## Core Features
 
-### Streak (Hari Berturut-turut)
-Fitur ini menghitung kebiasaan belajarmu:
-- **Streak**: Jumlah hari berturut-turut kamu menyelesaikan sesi latihan
-- **Total Study Days**: Total hari kamu sudah belajar (tidak reset)
+### Platform-wide Features
+- **PWA (Progressive Web App)**: Installable on mobile (Android/iOS) and desktop for a native-like experience.
+- **Offline First**: All data is stored locally via **IndexedDB**; the app works entirely without an internet connection.
+- **Dark Mode**: Support for dark and light themes with system-aware automatic switching.
+- **Haptic Feedback**: Tactile vibration feedback on mobile devices for interactions and errors.
+- **Modular Architecture**: A container-based system that allows new workout modules to be added easily.
 
-**Cara Kerja Streak:**
-1. Selesaiakan sesi latihan (jawab semua kartu due di satu deck)
-2. Streak akan naik 1 jika kamu juga belajar kemarin
-3. Jika ada waktu kosong 1 hari (tidak belajar), streak akan reset ke 1
-4. Contoh: Senin(+) → Selasa(2) → Kamis(reset ke 1)
+### Flashcard Module (Advanced SRS)
+- **SM-2 Algorithm**: Automatically schedules cards for review based on your recall performance.
+- **Due Cards System**: Only review what is necessary today based on mathematical scheduling.
+- **Study Streaks**: Tracks consecutive days of learning to build long-term habits.
+- **Import & Export**: Support for CSV and JSON formats to backup or migrate your data.
+- **Quick Study**: Practice due cards from all decks simultaneously.
 
-### Import & Export
-- **Import CSV**: Upload file CSV dengan format `deck,depan,belakang`
-- **Import JSON**: Restore backup lengkap (deck + kartu)
-- **Export JSON**: Backup semua data
-- **Export CSV**: Export semua kartu ke file CSV
-
-### Fitur Tambahan
-- **Quick Study**: Latihan cepat semua kartu due dari semua deck sekaligus
-- **Search & Filter**: Cari deck berdasarkan nama, urutkan berdasarkan urgency
-- **Reset App**: Hapus semua data dengan konfirmasi
-- **Persistence**: Menyimpan tema, streak, dan tab terakhir
+---
 
 ## Tech Stack
 
 - **Framework**: Svelte 4 (Stable)
-- **Styling**: TailwindCSS
+- **Styling**: Tailwind CSS 3
 - **Build Tool**: Vite 4
-- **Storage**: IndexedDB (via idb library)
-- **PWA**: vite-plugin-pwa
+- **Storage**: IndexedDB (via `idb` library)
+- **PWA**: `vite-plugin-pwa`
+
+---
 
 ## Getting Started
 
 ### Prerequisites
-
 - Node.js 18+
-- npm atau pnpm
+- npm
 
 ### Installation
 
 ```bash
-# Clone repository
+# Clone the repository
 git clone <repo-url>
-cd flashcard
+cd brain-workout
 
 # Install dependencies
 npm install
 
-# Development
+# Run development server
 npm run dev
 
-# Build production
+# Build for production
 npm run build
 
 # Preview production build
 npm run preview
 ```
 
-## Struktur Project
+---
+
+## Project Structure
 
 ```
 /src
   /apps
-    /flashcard         # Flashcard app module
+    /flashcard         # Flashcard module
+    /pomodoro          # Focus timer module
+    /memory-match      # Memory game module
+    /math-sprint       # Arithmetic module
+    /word-scramble     # Vocabulary module
+    /sequence-recall   # Working memory module
   /lib
-    /components        # Shared UI components
-    /stores            # Shared state (apps, navigation, theme)
-    /utils             # Shared Helpers
-  App.svelte           # Root component (Container)
-  main.js              # Entry point
-/public
-  icons/               # PWA icons
-  manifest.json        # PWA manifest
+    /components        # Shared UI components (Hub, Loading, etc.)
+    /stores            # Global state (theme, navigation, apps)
+    /utils             # Shared utilities (DB, SM-2, Haptics)
+  App.svelte           # Root App Container (Modular Loader)
+  main.js              # Platform Entry Point
 ```
 
-## Milestone / Rencana Pengembangan
+---
 
-### Phase 1: Setup & Design (Fondasi)
-- [x] Initialize Svelte 4 + Vite 4 project
-- [x] Install dependencies (idb, vite-plugin-pwa)
-- [x] Install & Konfigurasi **TailwindCSS** + PostCSS
-- [x] Setup **Dark Mode Store** (preferensi sistem & toggle)
-- [x] Implementasi UI Notifikasi PWA ("Update tersedia")
-- [x] Perbaikan Asset: Logo SVG & generate icon layak
+## SM-2 Algorithm (Used in Flashcards)
 
-### Phase 2: Data Layer (IndexedDB)
-- [x] Setup IndexedDB dengan library `idb`
-- [x] Store logic untuk Deck & Card (CRUD)
-- [x] Implementasi Algoritma SM-2 & Scheduler kartu
-- [x] Fitur **Export Data** (JSON/CSV)
-
-### Phase 3: UI Komponen (Mobile-First)
-- [x] Layout Utama (Navbar bawah ala mobile app)
-- [x] Dashboard: List Deck dengan indikator "Due"
-- [x] Flashcard: Animasi flip dengan Tailwind
-- [x] Modal input responsif
-
-### Phase 4: Fitur Inti & Latihan
-- [x] Logic Sesi Belajar (Filter kartu due)
-- [x] UI Latihan: Tampilan kartu, tombol rating (1-5)
-- [x] Update statistik SM-2 real-time
-
-### Phase 5: Import/Export & Stats
-- [x] Import CSV: Format `deck,depan,belakang`
-- [x] Export CSV/JSON: Backup data user
-- [x] Halaman Statistik sederhana (Total, Mastery, Streak)
-
-### Phase 6: Final Polish
-- [x] Verifikasi Offline support menyeluruh
-- [x] Custom Install Prompt (A2HS)
-- [x] Animasi transisi antar halaman
-
-## Rencana Pengembangan Selanjutnya (Phase 7)
-
-Berikut adalah breakdown tugas untuk pengembangan fitur lanjutan yang direncanakan:
-
-### 1. Visualisasi Data & Insight Belajar (Advanced Stats)
-- [ ] Integrasi library chart (misal: Chart.js atau LayerCake) untuk visualisasi.
-- [ ] Chart "Mastery Distribution" (Penyebaran tingkat kemahiran kartu).
-- [ ] Grafik "Activity Heatmap" atau "Learning Progress" mingguan.
-- [x] Fitur "Study Streak" (Menghitung hari berturut-turut belajar).
-- [ ] Statistik "Retention Rate" (Persentase jawaban benar/salah).
-
-### 2. Manajemen Data Tingkat Lanjut
-- [x] Fitur **Import JSON** untuk restorasi backup penuh (saat ini baru CSV).
-- [x] Validasi data import yang lebih ketat dengan feedback error yang jelas.
-- [ ] Fitur "Merge Decks" (Menggabungkan dua deck menjadi satu).
-- [x] Opsi untuk menghapus semua data (Reset App).
-
-### 3. Kustomisasi Sesi Belajar
-- [ ] Pengaturan limit harian: "Max New Cards" per hari per deck.
-- [ ] Pengaturan limit harian: "Max Review Cards" per hari per deck.
-- [x] Fitur "Quick Study" (Latihan cepat dari semua deck sekaligus).
-- [ ] Timer opsional saat menjawab kartu.
-
-### 4. Navigasi & Organisasi
-- [x] Fitur **Search Bar** di Dashboard untuk mencari deck.
-- [x] Fitur **Search & Filter** di dalam deck untuk mencari kartu tertentu.
-- [ ] Fitur **Tagging** pada kartu untuk pengelompokan lebih fleksibel.
-- [x] Sortir deck berdasarkan: Nama, Terakhir dipelajari, Jumlah kartu due.
-
-### 5. Robustness & Persistence
-- [x] Pastikan tema (Dark/Light) tersimpan di IndexedDB (selain localStorage).
-- [x] Restore "Last Session State": Kembali ke view/deck terakhir saat app dibuka.
-- [ ] Optimasi performa untuk database dengan ribuan kartu.
-
-## Cara Penggunaan
-
-### 1. Buat Deck
-- Klik tombol "Buat Deck" di halaman utama
-- Masukkan nama deck
-- Simpan
-
-### 2. Tambah Kartu
-- Pilih deck yang sudah dibuat
-- Klik "Tambah Kartu"
-- Isi sisi depan dan belakang
-- Simpan
-
-### 3. Mulai Latihan
-- Pilih deck → Klik "Latihan"
-- Kartu akan ditampilkan satu per satu
-- Klik kartu untuk flip
-- Beri rating 1-5 setelah menjawab:
-  - 1: Sama sekali tidak ingat
-  - 2: Susah ingat
-  - 3: Hafal tapi lupa
-  - 4: Hafal dengan susah payah
-  - 5: Hafal dengan mudah
-
-### 4. Review Terjadwal
-- Kartu akan muncul kembali berdasarkan algoritma SM-2
-- Kartu yang sulit akan lebih sering muncul
-- Kartu yang mudah akan semakin jarang muncul
-
-### 5. Import CSV
-- Siapkan file CSV dengan format: `deck,depan,belakang`
-- Buka menu import di halaman deck
-- Upload file CSV (encoding UTF-8)
-- Pilih opsi:
-  - **Buat deck baru** - otomatis buat deck dari kolom deck
-  - **Pilih deck existing** - masukkan semua kartu ke deck yang dipilih
-- Preview data sebelum import
-- Klik import
-
-Contoh CSV:
-```csv
-deck,depan,belakang
-Bahasa Japan,konnichiwa,halo
-Matematika,2+2,4
-```
-
-## SM-2 Algorithm
-
-Implementasi SuperMemo SM-2 untuk spaced repetition:
+The implementation of the SuperMemo SM-2 algorithm for spaced repetition:
 
 ```
 Initial:
   - Ease Factor (EF) = 2.5
   - Interval = 0
 
-After review:
-  - Rating < 3: Reset interval, EF tetap
+After Review:
+  - Rating < 3: Reset interval to 0, EF stays same.
   - Rating >= 3:
     - EF = EF + (0.1 - (5 - rating) * (0.08 + (5 - rating) * 0.02))
     - EF minimum = 1.3
-    - Interval = Interval sebelumnya × EF
+    - Interval = Previous Interval × EF
 ```
+
+**Ratings (1-5):**
+- 1-2: Failed to remember → Reset interval.
+- 3-5: Successfully remembered → Increase interval based on Ease Factor.
+
+---
+
+## Roadmap & Progress
+
+- [x] Phase 1: Core Modular Infrastructure (Hub, Routing, Theme)
+- [x] Phase 2: Local-First Data Layer (IndexedDB Schema versioning)
+- [x] Phase 3: PWA & Offline Support
+- [x] Phase 4: Core Apps (Flashcards, Pomodoro, Memory Match, Math Sprint)
+- [x] Phase 5: Advanced Apps (Word Scramble, Sequence Recall)
+- [ ] Phase 6: Global Analytics & Mastery Heatmap
+- [ ] Phase 7: Data Syncing (Optional/Local-only backups)
+
+---
 
 ## PWA Installation
 
-### Android
-1. Buka aplikasi di Chrome
-2. Klik menu → "Add to Home Screen"
-3. Ikon akan muncul di homescreen
+### Android (Chrome)
+1. Open the app in Chrome.
+2. Tap the three-dot menu → "Install App" or "Add to Home Screen".
 
 ### iOS (Safari)
-1. Buka aplikasi di Safari
-2. Klik share button
-3. Pilih "Add to Home Screen"
+1. Open the app in Safari.
+2. Tap the **Share** button.
+3. Scroll down and select **"Add to Home Screen"**.
 
-## Lisensi
+---
 
+## License
 MIT
